@@ -1,0 +1,12 @@
+import { NextResponse } from "next/server";
+import { connectDB, User } from "@/lib/mongodb";
+
+export async function GET() {
+  try {
+    await connectDB();
+    const users = await User.find({}, "-__v").sort({ createdAt: -1 }).lean();
+    return NextResponse.json(users, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ message: "Error: " + err.message }, { status: 500 });
+  }
+}
